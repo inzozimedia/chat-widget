@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+    <style>
+        body {
+            background-image: url("back.PNG"); /* Replace with your image path */
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            width: 350px;
+            height: auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            align-items: center;
+        }
+
+        input {
+            width: 80%; /* Reduced width of input fields */
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #f5f5f5;
+            color: #666;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        .login-link {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #003366;
+            text-align: center;
+        }
+
+        .footer-text {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.7.0/dist/umd/supabase.min.js"></script>
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://ogxccmlepttenkhwpqam.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neGNjbWxlcHR0ZW5raHdwcWFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjUyMjIxNTgsImV4cCI6MjA0MDc5ODE1OH0.IV4_8Yx5U9R0BCGYezrjMPxbfOiOPEg3tGFHsa47Bh0';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Handle form submission
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('button').addEventListener('click', async () => {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                // Sign up with Supabase
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    // Insert user details into the database
+                    const { error: dbError } = await supabase
+                        .from('users')
+                        .insert([{ name: name, email: email, password: password }]);
+
+                    if (dbError) {
+                        alert('Database Error: ' + dbError.message);
+                    } else {
+                        alert('Sign up successful!');
+                        // Redirect or clear form
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h2>I.M.W Registration<br>/Sign up</h2>
+        <div class="form-group">
+            <input id="name" type="text" placeholder="Name">
+            <input id="email" type="email" placeholder="Email">
+            <input id="password" type="password" placeholder="Password">
+        </div>
+        <div class="login-link">Already have an account? <a href="#">Log in</a></div>
+        <button>Submit</button>
+        <div class="footer-text">INZOZI MED WEB by MKB20/24</div>
+    </div>
+</body>
+</html>
